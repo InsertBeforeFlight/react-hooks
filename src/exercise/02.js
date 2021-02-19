@@ -5,31 +5,38 @@ import { useState, useEffect } from 'react'
 
 const STORAGE_NAME_KEY = "name";
 
-const getNameFromLocalStorage = initialName => window.localStorage.getItem(STORAGE_NAME_KEY) || initialName;
-
-function useLocalStorageState(initialName) {
-  const [name, setName] = useState(() => getNameFromLocalStorage(initialName));
-
-  useEffect(() => {
-    window.localStorage.setItem(STORAGE_NAME_KEY, name);
-  }, [name])
-
-  return [name, setName];
+const getValueInLocalStorage = (key, initialValue, deserializer) => {
+  const valueInLocalStorage = window.localStorage.getItem(key);
+  return valueInLocalStorage ? deserializer(valueInLocalStorage) : initialValue;
 }
 
-function Greeting({initialName = ''}) {
-  const [name, setName] = useLocalStorageState(initialName)
+const setValueInLocalStorage = (key, value, serializer) => {
+  window.localStorage.setItem(key, serializer(value))
+}
+
+function useLocalStorageState(key, initialValue, serialize = JSON.stringify, deserialize = JSON.parse ) {
+  const [state, setState] = useState(() => getValueInLocalStorage(STORAGE_NAME_KEY, initialValue, deserialize))
+
+  useEffect(() => {
+    setValueInLocalStorage(key, state, serialize);
+  }, [key, state])
+
+  return [state, setState]
+}
+
+function Greeting({initialGreeting = {}}) {
+  const [greeting, setGreeting] = useLocalStorageState(STORAGE_NAME_KEY, initialGreeting);
 
   function handleChange(event) {
-    setName(event.target.value)
+    setGreeting({ name: event.target.value });
   }
   return (
     <div>
       <form>
         <label htmlFor="name">Name: </label>
-        <input value={name} onChange={handleChange} id="name" />
+        <input value={greeting.name} onChange={handleChange} id="name" />
       </form>
-      {name ? <strong>Hello {name}</strong> : 'Please type your name'}
+      {greeting.name ? <strong>Hello {greeting.name}</strong> : 'Please type your name'}
     </div>
   )
 }
