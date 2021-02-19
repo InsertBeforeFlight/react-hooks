@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react'
 
 const STORAGE_NAME_KEY = "name";
 
+const getNameFromLocalStorage = initialName => window.localStorage.getItem(STORAGE_NAME_KEY) || initialName;
+
 function Greeting({initialName = ''}) {
-  const nameInLocalStorage = window.localStorage.getItem(STORAGE_NAME_KEY);
-  const [name, setName] = useState(nameInLocalStorage || initialName)
+  const [name, setName] = useState(() => getNameFromLocalStorage(initialName))
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_NAME_KEY, name);
