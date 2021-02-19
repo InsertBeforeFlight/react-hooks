@@ -7,12 +7,18 @@ const STORAGE_NAME_KEY = "name";
 
 const getNameFromLocalStorage = initialName => window.localStorage.getItem(STORAGE_NAME_KEY) || initialName;
 
-function Greeting({initialName = ''}) {
-  const [name, setName] = useState(() => getNameFromLocalStorage(initialName))
+function useLocalStorageState(initialName) {
+  const [name, setName] = useState(() => getNameFromLocalStorage(initialName));
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_NAME_KEY, name);
   }, [name])
+
+  return [name, setName];
+}
+
+function Greeting({initialName = ''}) {
+  const [name, setName] = useLocalStorageState(initialName)
 
   function handleChange(event) {
     setName(event.target.value)
