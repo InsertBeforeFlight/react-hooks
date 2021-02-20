@@ -11,34 +11,6 @@ const STATUS_REJECTED = "rejected";
 
 const initialState = { status: STATUS_IDLE, pokemon: null, error: null };
 
-class PokemonInfoErrorBoundary extends Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      error: null,
-    }
-  }
-
-  componentDidCatch(error, errorInfo) {
-    this.setState({ error });
-  }
-
-  render() {
-    if (this.state.error) {
-      return (
-        <div role="alert">
-          There was an error <pre style={{ whiteSpace: "normal" }}>{this.state.error.message}</pre>
-        </div>
-      )
-    }
-
-    return this.props.children;
-  }
-
-}
-
 function PokemonInfo({ pokemonName }) {
   const [state, setState] = useState(initialState);
 
@@ -94,9 +66,9 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <PokemonInfoErrorBoundary key={pokemonName}>
+        <PokemonErrorBoundary key={pokemonName}>
           <PokemonInfo pokemonName={pokemonName} />
-        </PokemonInfoErrorBoundary>
+        </PokemonErrorBoundary>
       </div>
     </div>
   )
