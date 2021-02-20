@@ -6,11 +6,24 @@ import {fetchPokemon, PokemonInfoFallback, PokemonDataView, PokemonForm} from '.
 
 function PokemonInfo({ pokemonName }) {
   const [pokemon, setPokemon] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchPokemon(pokemonName)
-      .then(fetchedPokemon => setPokemon(fetchedPokemon))
+      .then(fetchedPokemon => {
+        setPokemon(fetchedPokemon)
+        setError(null);
+      })
+      .catch(error => setError(error));
   }, [pokemonName])
+
+  if (error) {
+    return (
+      <div role="alert">
+        There was an error <pre style={{ whiteSpace: "normal" }}>{error.message}</pre>
+      </div>
+    )
+  }
 
   if (!pokemonName) {
     return "Submit a Pokemon";
