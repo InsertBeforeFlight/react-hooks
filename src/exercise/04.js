@@ -8,7 +8,7 @@ const CURRENT_MOVE_KEY = "TTT_CURRENT_MOVE";
 const CURRENT_HISTORY_KEY = "TT_CURRENT_HISTORY";
 
 const startingMove = 0;
-const startingSquares = Array(9).fill(null)
+const startingSquares = [].map(() => null);
 const startingHistory = [startingSquares];
 
 function Board({ squares, onSquaresChange, onSquaresReset }) {
